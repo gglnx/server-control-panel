@@ -1,0 +1,69 @@
+﻿<Window x:Class="ServerControlPanel.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Height="270" Width="576" Title="Server Control Panel" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" Closing="StopWorker" Icon="file_server_graphite.ico">
+    <Grid Height="220" VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="26"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Rectangle Grid.ColumnSpan="9" Fill="White" Height="172" Grid.RowSpan="8" Stroke="#FFAAAAAA" VerticalAlignment="Top" Opacity="0.4"/>
+        <Label Content="nginx" Margin="20,6,0,0" VerticalAlignment="Top" FontSize="14" Height="30" FontWeight="Bold" Grid.Column="1" Grid.RowSpan="2">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="White" RenderingBias="Quality"/>
+            </Label.Effect>
+        </Label>
+        <Button x:Name="StartNginx" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="1" Grid.Row="2" Click="StartNginxAction"/>
+        <Button x:Name="StopNginx" Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="1" Grid.Row="4" IsEnabled="False" Click="StopNginxAction"/>
+        <Button x:Name="RestartNginx" Content="Restart" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="1" Grid.Row="6" IsEnabled="False" Click="RestartNginxAction"/>
+        <Image x:Name="StatusNginx" Grid.Column="1" HorizontalAlignment="Left" Height="16" VerticalAlignment="Top" Width="16" Source="stopped.png" Stretch="None" Margin="0,13,0,0"/>
+        <Label Content="PHP" Margin="20,6,0,0" VerticalAlignment="Top" FontSize="14" Height="30" FontWeight="Bold" Grid.Column="3" Grid.RowSpan="2">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="White" RenderingBias="Quality"/>
+            </Label.Effect>
+        </Label>
+        <Image x:Name="StatusPHP" Grid.Column="3" HorizontalAlignment="Left" Height="16" VerticalAlignment="Top" Width="16" Source="stopped.png" Stretch="None" Margin="0,13,0,0"/>
+        <Label Content="MongoDB" Margin="20,6,0,0" VerticalAlignment="Top" FontSize="14" Height="30" FontWeight="Bold" Grid.Column="5" Grid.RowSpan="2">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="White" RenderingBias="Quality"/>
+            </Label.Effect>
+        </Label>
+        <Image x:Name="StatusMongoDB" Grid.Column="5" HorizontalAlignment="Left" Height="16" VerticalAlignment="Top" Width="16" Source="stopped.png" Stretch="None" Margin="0,13,0,0"/>
+        <Label Content="Memcache" Margin="20,6,0,0" VerticalAlignment="Top" FontSize="14" Height="30" FontWeight="Bold" Grid.Column="7" Grid.RowSpan="2">
+            <Label.Effect>
+                <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="White" RenderingBias="Quality"/>
+            </Label.Effect>
+        </Label>
+        <Image x:Name="StatusMemcache" Grid.Column="7" HorizontalAlignment="Left" Height="16" VerticalAlignment="Top" Width="16" Source="stopped.png" Stretch="None" Margin="0,13,0,0"/>
+        <Button x:Name="StartPHP" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="3" Grid.Row="2" Click="StartPHPAction"/>
+        <Button x:Name="StopPHP" Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="3" Grid.Row="4" IsEnabled="False" Click="StopPHPAction"/>
+        <Button x:Name="RestartPHP" Content="Restart" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="3" Grid.Row="6" IsEnabled="False" Click="RestartPHPAction"/>
+        <Button x:Name="StartMongoDB" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="5" Grid.Row="2" Click="StartMongoDBAction"/>
+        <Button x:Name="StopMongoDB" Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="5" Grid.Row="4" IsEnabled="False" Click="StopMongoDBAction"/>
+        <Button x:Name="RestartMongoDB" Content="Restart" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="5" Grid.Row="6" IsEnabled="False" Click="RestartMongoDBAction"/>
+        <Button x:Name="StartMemcache" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="7" Grid.Row="2" Click="StartMemcacheAction"/>
+        <Button x:Name="StopMemcache" Content="Stop" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="7" Grid.Row="4" IsEnabled="False" Click="StopMemcacheAction"/>
+        <Button x:Name="RestartMemcache" Content="Restart" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="7" Grid.Row="6" IsEnabled="False" Click="RestartMemcacheAction"/>
+        <Button x:Name="StartAllButton" Content="Start All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="5" Grid.Row="8" Click="StartAll"/>
+        <Button x:Name="StopAllButton" Content="Stop All" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="35" Grid.Column="7" Grid.Row="8" IsEnabled="False" Click="StopAll"/>
+
+    </Grid>
+</Window>
