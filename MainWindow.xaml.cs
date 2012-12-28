@@ -29,6 +29,9 @@ namespace ServerControlPanel
         // Status of PHP
         public bool php = false;
 
+        // Status of Redis
+        public bool redis = false;
+
         // Status of MongoDB
         public bool mongodb = false;
 
@@ -57,6 +60,7 @@ namespace ServerControlPanel
             List<string> approvedProcesses = new List<string>();
             approvedProcesses.Add("nginx");
             approvedProcesses.Add("php-cgi");
+            approvedProcesses.Add("redis-server");
             approvedProcesses.Add("mongod");
             approvedProcesses.Add("memcached");
 
@@ -80,6 +84,13 @@ namespace ServerControlPanel
                     php = processes.Contains("php-cgi");
                     StartPHP.Dispatcher.Invoke(setStatusPHP);
                 }
+
+                // Set Redis status
+                if (redis != processes.Contains("redis-server"))
+                {
+                    redis = processes.Contains("redis-server");
+                    StartRedis.Dispatcher.Invoke(setStatusRedis);
+                }
                 
                 // Set MongoDB status
                 if (mongodb != processes.Contains("mongod"))
@@ -96,15 +107,15 @@ namespace ServerControlPanel
                 }
 
                 // Enable stop all button if one of the processes is running
-                if (nginx || php || mongodb || memcache)
+                if (nginx || php || mongodb || memcache || redis)
                     StopAllButton.Dispatcher.Invoke(enableStopAllButton);
 
                 // Disable stop all button if notthing is running
-                if (!nginx && !php && !mongodb && !memcache)
+                if (!nginx && !php && !mongodb && !memcache && !redis)
                     StopAllButton.Dispatcher.Invoke(disableStopAllButton);
 
                 // Disable start all button if anything is running
-                if ( nginx && php && mongodb && memcache )
+                if ( nginx && php && mongodb && memcache && redis )
                     StartAllButton.Dispatcher.Invoke(disableStartAllButton);
             }
         }
@@ -140,6 +151,20 @@ namespace ServerControlPanel
 
             // Set status image
             StatusPHP.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("/Server Control Panel;component/" + (php ? "running" : "stopped") + ".png", System.UriKind.Relative));
+        }
+
+        protected void setStatusRedis()
+        {
+            // Enable/disable buttons
+            StartRedis.IsEnabled = !redis;
+            StopRedis.IsEnabled = redis;
+            RestartRedis.IsEnabled = redis;
+
+            // Enable start all button
+            StartAllButton.IsEnabled = true;
+
+            // Set status image
+            StatusRedis.Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("/Server Control Panel;component/" + (redis ? "running" : "stopped") + ".png", System.UriKind.Relative));
         }
 
         protected void setStatusMongoDB()
@@ -224,6 +249,21 @@ namespace ServerControlPanel
             CMD.Start();
         }
 
+        private void StartRedisAction(object sender, RoutedEventArgs e)
+        {
+            // Init a process
+            Process CMD = new Process();
+
+            // Set settings
+            CMD.StartInfo.FileName = "C:\\server\\bin\\redis\\redis-server.exe";
+            CMD.StartInfo.Arguments = "C:\\server\\bin\\redis\\redis.conf";
+            CMD.StartInfo.UseShellExecute = false;
+            CMD.StartInfo.CreateNoWindow = true;
+
+            // Start process
+            CMD.Start();
+        }
+
         private void StartMongoDBAction(object sender, RoutedEventArgs e)
         {
             // Init a process
@@ -270,6 +310,18 @@ namespace ServerControlPanel
         {
             // Get PHP processes
             Process[] aProc = Process.GetProcessesByName("php-cgi");
+
+            // Kill processes
+            for (int i = 0; i < aProc.Length; i++)
+            {
+                aProc[i].Kill();
+            }
+        }
+
+        private void StopRedisAction(object sender, RoutedEventArgs e)
+        {
+            // Get Redis processes
+            Process[] aProc = Process.GetProcessesByName("redis-server");
 
             // Kill processes
             for (int i = 0; i < aProc.Length; i++)
@@ -332,6 +384,21 @@ namespace ServerControlPanel
             RestartPHP.IsEnabled = true;
         }
 
+        private void RestartRedisAction(object sender, RoutedEventArgs e)
+        {
+            // Disable button
+            RestartRedis.IsEnabled = false;
+
+            // Stop Redis
+            StopRedis.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            // Start Redis
+            StartRedis.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            // Enable button
+            RestartRedis.IsEnabled = true;
+        }
+
         private void RestartMongoDBAction(object sender, RoutedEventArgs e)
         {
             // Disable button
@@ -380,6 +447,10 @@ namespace ServerControlPanel
             if (!memcache)
                 StartMemcache.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
+            // Start redis
+            if (!redis)
+                StartRedis.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
             // Disable start all button, enable stop all button
             StartAllButton.IsEnabled = false;
             StopAllButton.IsEnabled = true;
@@ -402,6 +473,10 @@ namespace ServerControlPanel
             // Stop memcache
             if (memcache)
                 StopMemcache.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            // Stop redis
+            if (redis)
+                StopRedis.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
             // Disable start all button, enable stop all button
             StartAllButton.IsEnabled = true;
